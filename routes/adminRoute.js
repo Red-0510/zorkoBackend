@@ -1,13 +1,19 @@
 import express from "express"
-import { changePassword, createAdmin, forgotPassword, getUser, loginUser, logoutUser, registerUser, resetPassword, verifyOtp } from "../controllers/userController.js"
+
 import { adminAuth, userAuth } from "../utils/auth.js"
+import { getAdmin, loginAdmin } from "../controllers/adminController.js"
+import { createAdmin } from "../controllers/adminController.js"
 
 
 const router = express.Router()
 
-router.post("/register",registerUser)
-router.post("/verify-otp",verifyOtp)
-router.post("/getuser",userAuth,getUser);
+router.post("/login",loginAdmin)
+router.post("/getadmin",adminAuth,getAdmin);
+
+router.post("/createadmin",createAdmin);
+
+// router.post("/register",registerUser)
+// router.post("/verify-otp",verifyOtp)
 // router.route("/login")
 //     .post(loginUser)
 //     .get(userAuth, getUser)
@@ -22,8 +28,8 @@ router.post("/getuser",userAuth,getUser);
 // router.put("/resetpassword/:resetToken",resetPassword)
 
 
-//admin routes
-router.route("/admin")
-    .post(adminAuth,createAdmin)
+// //admin routes
+// router.route("/admin")
+//     .post(adminAuth,createAdmin)
 
 export default router

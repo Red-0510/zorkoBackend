@@ -1,20 +1,21 @@
 import jwt from "jsonwebtoken"
 
-export const sendToken = (user,res)=>{
+export const sendToken = (user)=>{
 
     const token = user.getJWTToken();
-    const options = {
-        path:"/",
-        expires:new Date(Date.now() + 1000 * 60 * 60), // 1hr
-        httpOnly:true,
-        sameSite:"lax"
-    }
-    res.cookie(String(user._id),token,options)
+    return token;
+    // const options = {
+    //     path:"/",
+    //     expires:new Date(Date.now() + 1000 * 60 * 60), // 1hr
+    //     httpOnly:true,
+    //     sameSite:"lax"
+    // }
+    // res.cookie(String(user._id),token,options)
 }
 
 export const userAuth = async (req,res,next) =>{
     try{
-        const token = req.headers.cookie?.split("=")[1];
+        const token = req.body.token;
         if(!token || token.length<=6){
             res.status(400)
             throw new Error("Token Expired Please Log in")
@@ -22,10 +23,10 @@ export const userAuth = async (req,res,next) =>{
         
         const data = jwt.verify(String(token),process.env.ACCESS_TOKEN_SECRET)
 
-        // if(data.role==="admin"){
-        //     res.status(400)
-        //     throw new Error("Use admin routes for admin works")
-        // }
+        if(data.role==="admin"){
+            res.status(400)
+            throw new Error("Use admin routes for admin works")
+        }
         req.user = data
         next()
     }
@@ -36,7 +37,7 @@ export const userAuth = async (req,res,next) =>{
 
 export const adminAuth = async (req,res,next) =>{
     try{
-        const token = req.headers.cookie?.split("=")[1];
+        const token = req.body.token;
         if(!token || token.length<=6){
             res.status(400)
             throw new Error("Token Expired Please Log in")
@@ -44,11 +45,11 @@ export const adminAuth = async (req,res,next) =>{
         
         const data = jwt.verify(String(token),process.env.ACCESS_TOKEN_SECRET)
 
-        if(data.role!=="admin"){
-            res.status(404)
-            throw new Error("You are not Authorised")
+        if(data.role!="admin"){
+            res.status(400)
+            throw new Error("Use admin routes for admin works")
         }
-        req.user = data
+        req.admin = data;
         next()
     }
     catch(err){

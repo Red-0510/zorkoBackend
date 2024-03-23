@@ -6,8 +6,6 @@ import { sendEmail } from "../utils/sendEmail.js"
 import twilio from "twilio"
 
 
-const otpStore = {};
-
 const accountSid = process.env.OTP_ACCOUNT_SID;
 const authToken = process.env.OTP_AUTH_TOKEN;
 const verifySid = process.env.OTP_VERIFY_SID;
@@ -38,9 +36,24 @@ export const verifyOtp = async(req,res,next)=>{
                 to:mobileNumber,
                 code:otp,
             });
-        res.status(200).json({
-            success:true,
-        });
+        if(verifiedResponse.status =="approved"){
+            let user = await User.findOne({phone:mobileNumber});
+            if(!user){
+                user = await User.create({
+                    phone:mobileNumber,
+                });
+            }
+            const token = sendToken(user);
+            res.status(200).json({
+                success:true,
+                data:{
+                    token,
+                }
+            });
+        }
+        else{
+            throw new Error("not approved otp");
+        }
     } catch(err){
         console.log(err);
     }
@@ -69,9 +82,9 @@ export const registerUser = async (req,res,next)=>{
         
         // if(user){
             // const {phoneNumber} = 
-            console.log("user created")
+            // console.log("user created")
             const resp=await sendOtp(mobileNumber);
-            console.log(resp);
+            // console.log(resp);
             if(!resp){
                 throw new Error("Something error occured");
             }
@@ -83,6 +96,27 @@ export const registerUser = async (req,res,next)=>{
         // }
     }
     catch(err){
+        next(err)
+    }
+}
+
+export const getUser = async (req,res,next)=>{
+    try{
+        const {id} = req.user;
+        const user = await User.findById(id).select("-password")
+        
+        if(!user){
+            res.status(404)
+            throw new Error("User not found")
+        }
+
+        res.status(200).json({
+            success:true,
+            message:"User details fetched",
+            data:user,
+        })
+
+    }catch(err){
         next(err)
     }
 }
@@ -146,28 +180,6 @@ export const logoutUser = async(req,res,next)=>{
         })
     }
     catch(err){
-        next(err)
-    }
-}
-
-//get User details
-export const getUser = async (req,res,next)=>{
-    try{
-        const {id,role} = req.user
-        const user = await User.findById(id).select("-password")
-        
-        if(!user){
-            res.status(404)
-            throw new Error("User not found")
-        }
-
-        res.status(200).json({
-            success:true,
-            message:"User details fetched",
-            data:user,
-        })
-
-    }catch(err){
         next(err)
     }
 }

@@ -2,39 +2,33 @@ import mongoose from "mongoose"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 
-const userSchema = mongoose.Schema({
+const adminSchema = mongoose.Schema({
     name:{
         type:String,
         // required: [true, "Please add a name"]
     },
-    phone:{
+    email:{
         type:String,
-        required:[true,"Please add phone"]
+        required:[true, "Please enter an email"],
+        unique:[true,"email already registered"],
     },
-    purchaseHistory:[
+    outlets:[
         {
-
+            outletId:{
+                type:mongoose.Schema.Types.ObjectId,
+                required:true,
+                ref:"Outlet"
+            }
         }
     ],
-    cart:[
-        {
-
-        }
-    ],
-    rewards:{
-
-    },
-    location:{
+    password:{
         type:String,
-    },
-    spendLimit:{
-        type:Number,
-        default:100000
+        required:[true,"Please enter a password"],
     },
     // email:{
     //     type:String,
     //     required:[true,"Please add an email"],
-    //     unique:[true,"email already registered"],
+        // unique:[true,"email already registered"],
     //     trim:true,
     //     match:[
     //         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
@@ -46,21 +40,17 @@ const userSchema = mongoose.Schema({
     //     default:"user",
     //     immutable:true,
     // },
-    // password:{
-    //     type:String,
-    //     required:[true,"Please enter a password"],
-    //     minLength:[6,"password must be atleast 6 characters long"],
-    // },
+    
 },{
     timestamps:true
 })
 
 // generate JWT Access Token 
-userSchema.methods.getJWTToken = function(){
+adminSchema.methods.getJWTToken = function(){
     const accessToken = jwt.sign(
         {
             id:this._id,
-            role:"user",
+            role:"admin",
         },
         process.env.ACCESS_TOKEN_SECRET,
         {
@@ -72,12 +62,12 @@ userSchema.methods.getJWTToken = function(){
 }
 
 // password compare method
-userSchema.methods.comparePassword = async function(enteredPassword){
+adminSchema.methods.comparePassword = async function(enteredPassword){
     return bcrypt.compare(enteredPassword,this.password)
 }
 
 // hashing the password whenever it is modified before saving to DB
-userSchema.pre('save',async function(next){
+adminSchema.pre('save',async function(next){
     if(!this.isModified("password")) return next()
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(this.password,salt);
@@ -85,6 +75,6 @@ userSchema.pre('save',async function(next){
     next()
 });
 
-const User = mongoose.model("User",userSchema)
+const Admin = mongoose.model("Admin",adminSchema)
 
-export default User
+export default Admin
