@@ -29,13 +29,13 @@ const sendOtp = async(mobileNumber)=>{
 export const verifyOtp = async(req,res,next)=>{
     try{
         const {mobileNumber,otp} = req.body;
-        // const verifiedResponse = await client.verify
-        //     .services(verifySid)
-        //     .verificationChecks.create({
-        //         to:mobileNumber,
-        //         code:otp,
-        //     });
-        // if(verifiedResponse.status =="approved"){
+        const verifiedResponse = await client.verify
+            .services(verifySid)
+            .verificationChecks.create({
+                to:mobileNumber,
+                code:otp,
+            });
+        if(verifiedResponse.status =="approved"){
             let user = await User.findOne({phone:mobileNumber});
             if(!user){
                 user = await User.create({
@@ -49,10 +49,10 @@ export const verifyOtp = async(req,res,next)=>{
                     token,
                 }
             });
-        // }
-        // else{
-        //     throw new Error("not approved otp");
-        // }
+        }
+        else{
+            throw new Error("not approved otp");
+        }
     } catch(err){
         console.log(err);
     }
