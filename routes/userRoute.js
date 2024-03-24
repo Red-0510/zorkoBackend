@@ -1,5 +1,5 @@
 import express from "express"
-import { changePassword, createAdmin, forgotPassword, getUser, loginUser, logoutUser, registerUser, resetPassword, verifyOtp } from "../controllers/userController.js"
+import { addPost, changePassword, createAdmin, forgotPassword, getUser, loginUser, logoutUser, registerUser, resetPassword, updatePost, verifyOtp } from "../controllers/userController.js"
 import { adminAuth, userAuth } from "../utils/auth.js"
 import { getOutlet } from "../controllers/adminController.js"
 import { getItem, getItems } from "../controllers/itemController.js"
@@ -13,6 +13,8 @@ router.post("/getuser",userAuth,getUser);
 router.post("/getoutlet",userAuth,getOutlet);
 router.post("/getitem",userAuth,getItem);
 router.post("/getitems",userAuth,getItems);
+router.route("/addpost",userAuth,addPost);
+router.route("/updatepost",userAuth,updatePost);
 // router.route("/login")
 //     .post(loginUser)
 //     .get(userAuth, getUser)

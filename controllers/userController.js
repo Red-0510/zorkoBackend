@@ -1,6 +1,7 @@
 import { sendToken } from "../utils/auth.js"
 import User from "../models/User.js"
 import Token from "../models/Token.js"
+import Posts from "../models/Posts.js"
 import crypto from "crypto"
 import { sendEmail } from "../utils/sendEmail.js"
 import twilio from "twilio"
@@ -57,41 +58,79 @@ export const verifyOtp = async(req,res,next)=>{
     }
 }
 
+export const addPost = async (req,res,next)=>{
+    try{
+        const {id}=req.user;
+        const {comment} = req.body;
+        const user = await User.findById(id);
+        if(!user) throw new Error("User not found");
+        const post = await Posts.create({
+            name:user.name,
+            userId:id,
+            comment,
+        });
+
+        res.status(200).json({
+            status:true,
+            message:"post created successfully",
+        });
+
+    } catch(err){
+        next(err);
+    }
+}
+
+export const updatePost = async(req,res,next)=>{
+    try{
+        const {id} = req.id;
+        const {postId,data} = req.body;
+        const post = await Posts.findById(postId);
+        const newPost = {
+            ...post,
+            ...data
+        }
+        post = post;
+        await post.save();
+        res.status(200).josn({
+            success:true,
+            message:"post updated successfully",
+        });
+    }catch(err){
+        next(err);
+    }
+}
+
 export const registerUser = async (req,res,next)=>{
     try{
         const {mobileNumber} = req.body
 
         
-        // const userExists = await User.findOne({phoneNumber})
-        
-        // if(userExists){
-        //     res.status(400)
-        //     throw new Error("Number already exists. Please login")
-        // }
+        let user = await User.findOne({phone:mobileNumber})
+        if(!user){
+            user = await User.create({
+                phone:mobileNumber,
+            })
+        }
 
-        // if(phoneNumber.length < 10){
-        //     res.status(400)
-        //     throw new Error("enter a valid number")
-        // }
+        if(mobileNumber.length < 10){
+            res.status(400)
+            throw new Error("enter a valid number")
+        }
         
-        // const user = await User.create({
-        //     phoneNumber
-        // })
         
-        // if(user){
-            // const {phoneNumber} = 
-            // console.log("user created")
-            
-            // const resp=await sendOtp(mobileNumber);
-            // if(!resp){
-            //     throw new Error("Something error occured");
-            // }
+        if(user){
+            console.log("user created")
+
+            const resp=await sendOtp(mobileNumber);
+            if(!resp){
+                throw new Error("Something error occured");
+            }
             console.log("otp sent")
             res.status(201).json({
                 success:"true",
                 message:"Otp Sent Successully",
             })
-        // }
+        }
     }
     catch(err){
         next(err)
