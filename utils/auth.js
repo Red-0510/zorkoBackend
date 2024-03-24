@@ -16,6 +16,7 @@ export const sendToken = (user)=>{
 export const userAuth = async (req,res,next) =>{
     try{
         const token = req.body.token;
+        console.log(token)
         if(!token || token.length<=6){
             res.status(400)
             throw new Error("Token Expired Please Log in")

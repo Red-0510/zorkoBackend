@@ -35,7 +35,7 @@ export const addItem = async (req,res,next)=>{
 
         res.status(200).json({
             success:true,
-            message:"Items fetched Succesfully",
+            message:"Items added Succesfully",
         });
 
     }catch(err){
@@ -69,11 +69,12 @@ export const getItem = async(req,res,next)=>{
 
 export const getItems = async(req,res,next)=>{
     try{
-        const {userId,spendLimit} = req.user.id;
+        const {userId} = req.user.id;
+        let {spendLimit} = req.body;
         if(spendLimit==null) spendLimit=100000
 
         const items = await Item.find({
-            price:{$le:{spendLimit}}
+            // price:{$le:spendLimit}
         });
 
         if(!items || items.length==0){

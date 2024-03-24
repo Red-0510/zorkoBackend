@@ -12,11 +12,11 @@ router.post("/login",loginAdmin)
 router.post("/getadmin",adminAuth,getAdmin);
 
 router.post("/createadmin",createAdmin);
-router.post("/createoutlet",createOutlet);
+router.post("/createoutlet",adminAuth,createOutlet);
 router.post("/additem",adminAuth,addItem);
 router.post("/updateitem",adminAuth,updateItem);
-router.post("getoutlet",getOutlet);
-router.post("/getitem",getItem);
+router.post("/getoutlet",adminAuth,getOutlet);
+router.post("/getitem",adminAuth,getItem);
 
 
 // router.post("/register",registerUser)

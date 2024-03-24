@@ -2,7 +2,7 @@ import mongoose from "mongoose"
 import dotenv from "dotenv"
 
 dotenv.config()
-let databaseUrl = process.env.DATABASE_TRY
+let databaseUrl = process.env.DATABASE_DEV
 
 if (process.env.NODE_ENV === "production") {
   databaseUrl = process.env.DATABASE_PROD

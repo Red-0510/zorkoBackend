@@ -69,7 +69,8 @@ export const getAdmin = async (req,res,next)=>{
 
 export const createOutlet = async(req,res,next)=>{
     try{
-        const {adminId,location} = req.body;
+        const adminId = req.admin.id;
+        const {location} = req.body;
         const admin = await Admin.findById(adminId);
 
         if(!admin){
@@ -104,7 +105,7 @@ export const getOutlet = async(req,res,next)=>{
         const outlet= await Outlet.findById(outletId);
 
         if(!outlet) throw new Error("Outlet not found");
-        
+
         res.status(200).json({
             success:true,
             message:"outlet fetched successfully",

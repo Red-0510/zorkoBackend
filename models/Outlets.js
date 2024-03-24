@@ -26,7 +26,7 @@ const outletSchema = mongoose.Schema({
     ],
     menu:[
         {
-            ItemId:{
+            itemId:{
                 type:mongoose.Schema.Types.ObjectId,
                 required:true,
                 ref:"Item",

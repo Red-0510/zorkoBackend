@@ -28,13 +28,13 @@ const sendOtp = async(mobileNumber)=>{
 export const verifyOtp = async(req,res,next)=>{
     try{
         const {mobileNumber,otp} = req.body;
-        const verifiedResponse = await client.verify
-            .services(verifySid)
-            .verificationChecks.create({
-                to:mobileNumber,
-                code:otp,
-            });
-        if(verifiedResponse.status =="approved"){
+        // const verifiedResponse = await client.verify
+        //     .services(verifySid)
+        //     .verificationChecks.create({
+        //         to:mobileNumber,
+        //         code:otp,
+        //     });
+        // if(verifiedResponse.status =="approved"){
             let user = await User.findOne({phone:mobileNumber});
             if(!user){
                 user = await User.create({
@@ -48,10 +48,10 @@ export const verifyOtp = async(req,res,next)=>{
                     token,
                 }
             });
-        }
-        else{
-            throw new Error("not approved otp");
-        }
+        // }
+        // else{
+        //     throw new Error("not approved otp");
+        // }
     } catch(err){
         console.log(err);
     }
@@ -81,11 +81,11 @@ export const registerUser = async (req,res,next)=>{
         // if(user){
             // const {phoneNumber} = 
             // console.log("user created")
-            const resp=await sendOtp(mobileNumber);
-            // console.log(resp);
-            if(!resp){
-                throw new Error("Something error occured");
-            }
+            
+            // const resp=await sendOtp(mobileNumber);
+            // if(!resp){
+            //     throw new Error("Something error occured");
+            // }
             console.log("otp sent")
             res.status(201).json({
                 success:"true",

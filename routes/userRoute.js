@@ -11,8 +11,8 @@ router.post("/register",registerUser)
 router.post("/verify-otp",verifyOtp)
 router.post("/getuser",userAuth,getUser);
 router.post("/getoutlet",userAuth,getOutlet);
-router.post("getitem",userAuth,getItem);
-router.post("getitems",userAuth,getItems);
+router.post("/getitem",userAuth,getItem);
+router.post("/getitems",userAuth,getItems);
 // router.route("/login")
 //     .post(loginUser)
 //     .get(userAuth, getUser)
