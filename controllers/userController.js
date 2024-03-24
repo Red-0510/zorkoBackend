@@ -12,8 +12,6 @@ const verifySid = process.env.OTP_VERIFY_SID;
 const client = twilio(accountSid, authToken,{lazyLoading:true});
 const sendOtp = async(mobileNumber)=>{
     try{
-
-
         const otpResponse = await client.verify
           .services(verifySid)
           .verifications.create({ to: mobileNumber, channel: "sms" })

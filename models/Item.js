@@ -9,14 +9,17 @@ const itemSchema = mongoose.Schema({
         type:Number,
         required:[true,"please add item name"],
     },
+    offer:{
+        type:Number,
+    },
     image:{
         type:String,
     },
-    // outletId:{
-    //     type:mongoose.Schema.Types.Outl
-    //     required:true,
-    //     ref:""
-    // },
+    outletId:{
+        type:mongoose.Schema.Types.ObjectId,
+        required:true,
+        ref:"Outlet"
+    },
 });
 
 const Item = mongoose.model("Item",itemSchema);

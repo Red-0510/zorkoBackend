@@ -8,18 +8,36 @@ const transactionSchema = mongoose.Schema({
     },
     items:[
         {
+            itemId:{
+                type:mongoose.Schema.Types.ObjectId,
+                required:true,
+                ref:"User"
+            },
+            name:{
+                type:String,
+            },
+            price:{
+                type:Number,
+            },
+            quantity:{
+                type:Number,
+            },
+            cost:{
+                type:Number,
+            },
 
         }
     ],
-    reward:{
+    // reward:{
 
-    },
+    // },
     cost:{
         type:Number,
     },
     time:{
         type:Date,
         required:true,
+        default:Date.now,
     },
 },{
     timestamps:true

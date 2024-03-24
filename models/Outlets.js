@@ -5,25 +5,43 @@ const outletSchema = mongoose.Schema({
         type:String,
         required:[true,"please add outlet"],
     },
-    creater:{
-
+    creator:{
+        type:mongoose.Schema.Types.ObjectId,
+        required:true,
+        ref:"Admin",
     },
-    managers:{
-
-    },
+    managers:[
+        {
+            adminId:{
+                type:mongoose.Schema.Types.ObjectId,
+                required:true,
+                ref:"Admin"
+            },
+            joined:{
+                type:Date,
+                default:Date.now,
+                required:true,
+            }
+        }
+    ],
     menu:[
         {
-
+            ItemId:{
+                type:mongoose.Schema.Types.ObjectId,
+                required:true,
+                ref:"Item",
+            }
         }
     ],
-    offers:[
-        {
+    // offers:[
+    //     {
 
-        }
-    ],
+    //     }
+    // ],
     estab:{
         type:Date,
-        required:true
+        required:true,
+        default:Date.now,
     },
 });
 

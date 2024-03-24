@@ -1,8 +1,9 @@
 import express from "express"
 
 import { adminAuth, userAuth } from "../utils/auth.js"
-import { getAdmin, loginAdmin } from "../controllers/adminController.js"
+import { createOutlet, getAdmin, getOutlet, loginAdmin } from "../controllers/adminController.js"
 import { createAdmin } from "../controllers/adminController.js"
+import { addItem, getItem, updateItem } from "../controllers/itemController.js"
 
 
 const router = express.Router()
@@ -11,6 +12,12 @@ router.post("/login",loginAdmin)
 router.post("/getadmin",adminAuth,getAdmin);
 
 router.post("/createadmin",createAdmin);
+router.post("/createoutlet",createOutlet);
+router.post("/additem",adminAuth,addItem);
+router.post("/updateitem",adminAuth,updateItem);
+router.post("getoutlet",getOutlet);
+router.post("/getitem",getItem);
+
 
 // router.post("/register",registerUser)
 // router.post("/verify-otp",verifyOtp)

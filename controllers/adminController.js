@@ -1,4 +1,5 @@
 import Admin from "../models/Admin.js"
+import Outlet from "../models/Outlets.js"
 import Token from "../models/Token.js"
 import { sendToken } from "../utils/auth.js"
 
@@ -66,7 +67,60 @@ export const getAdmin = async (req,res,next)=>{
     }
 }
 
-export const createAdmin = async(req,res)=>{
+export const createOutlet = async(req,res,next)=>{
+    try{
+        const {adminId,location} = req.body;
+        const admin = await Admin.findById(adminId);
+
+        if(!admin){
+            throw new Error("admin user not found");
+        }
+
+        const managers=[{adminId}];
+
+        const outlet = await Outlet.create({
+            location,creator:adminId,managers,
+        });
+
+        admin.outlets.push({
+            outletId:outlet._id,
+        });
+        await admin.save();
+
+        res.status(200).json({
+            success:true,
+            message:"outlet created successfully",
+        })
+    }
+    catch(err){
+        next(err)
+    }
+}
+
+
+export const getOutlet = async(req,res,next)=>{
+    try{
+        const outletId = req.body.outletId;
+        const outlet= await Outlet.findById(outletId);
+
+        if(!outlet) throw new Error("Outlet not found");
+        
+        res.status(200).json({
+            success:true,
+            message:"outlet fetched successfully",
+            outlet,
+        })
+
+    }
+    catch(err){
+        next(err)
+    }
+}
+
+
+
+
+export const createAdmin = async(req,res,next)=>{
     try{
         const {email,password} = req.body;
         const admin = await Admin.create({
@@ -81,6 +135,23 @@ export const createAdmin = async(req,res)=>{
         next(err)
     }
 }
+
+// export const addManager = async(req,res)=>{
+//     try{
+//         const {email,password} = req.body;
+//         const admin = await Admin.create({
+//             email,password,
+//         });
+//         res.status(200).json({
+//             success:true,
+//             message:"admin created successfully",
+//         })
+//     }
+//     catch(err){
+//         next(err)
+//     }
+// }
+
 
 // logout user
 export const logoutAdmin = async(req,res,next)=>{
